@@ -7,16 +7,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.getalemonadeapp.ui.theme.GetALemonadeAppTheme
@@ -51,27 +56,48 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GetLemonadeApp(
     modifier: Modifier = Modifier, clickCount: Int = 0
 ) {
     var currentState by remember { mutableStateOf(LemonadeStates.TREE) }
 
-    CoreView(
-        clickCount = clickCount,
-        imagePainter = currentState.imageResource,
-        imageDescription = currentState.descriptionResource,
-        textContent = currentState.textResource,
-        onImageClick = {
-            currentState = when (currentState) {
-                LemonadeStates.TREE -> LemonadeStates.LEMON
-                LemonadeStates.LEMON -> LemonadeStates.LEMONADE
-                LemonadeStates.LEMONADE -> LemonadeStates.GLASS
-                LemonadeStates.GLASS -> LemonadeStates.TREE
-            }
-        },
-        modifier = modifier
-    )
+    Scaffold(topBar = {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = "Lemonade", fontWeight = FontWeight.Bold
+                )
+            }, colors = TopAppBarDefaults.largeTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        )
+    }) { innerPadding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.tertiaryContainer),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            CoreView(
+                clickCount = clickCount,
+                imagePainter = currentState.imageResource,
+                imageDescription = currentState.descriptionResource,
+                textContent = currentState.textResource,
+                onImageClick = {
+                    currentState = when (currentState) {
+                        LemonadeStates.TREE -> LemonadeStates.LEMON
+                        LemonadeStates.LEMON -> LemonadeStates.LEMONADE
+                        LemonadeStates.LEMONADE -> LemonadeStates.GLASS
+                        LemonadeStates.GLASS -> LemonadeStates.TREE
+                    }
+                },
+                modifier = modifier
+            )
+        }
+    }
 }
 
 @Composable
@@ -130,12 +156,12 @@ fun CoreView(
                     }
 
                 },
-            shape = RoundedCornerShape(16.dp),
-            color = colorResource(R.color.button_background),
+            shape = RoundedCornerShape(18.dp)
         ) {
             Image(
                 painter = painterResource(imagePainter),
                 contentDescription = stringResource(imageDescription),
+                modifier = modifier.background(colorResource(R.color.button_background))
             )
         }
         Text(
