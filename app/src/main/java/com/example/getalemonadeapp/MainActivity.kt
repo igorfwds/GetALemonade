@@ -1,7 +1,6 @@
 package com.example.getalemonadeapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var clickCount by remember { mutableIntStateOf(0) }
+            val clickCount by remember { mutableIntStateOf(0) }
             GetALemonadeAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     GetLemonadeApp(
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun GetLemonadeApp(
-    clickCount: Int = 0, modifier: Modifier = Modifier
+    modifier: Modifier = Modifier, clickCount: Int = 0
 ) {
     var currentState by remember { mutableStateOf(LemonadeStates.TREE) }
 
@@ -90,18 +90,15 @@ fun CoreView(
     ) {
         var clicks by remember { mutableIntStateOf(clickCount) }
         var timerActive by remember { mutableStateOf(false) }
-        var randomClickGoal = remember { (2..4).random() }
-        Log.d("ClickGoal", "CoreView randomClickGoal: $randomClickGoal")
+        var randomClickGoal by remember { mutableIntStateOf((2..4).random()) }
 
         LaunchedEffect(timerActive) {
             if (timerActive && imageDescription == R.string.lemon) {
-                delay(10_000)
+                delay(3_000)
                 if (clicks < randomClickGoal) {
                     clicks = 0
-                    Log.d("ZERANDO", "Zerando os clicks (clicks < randomClickGoal)")
                 }
                 timerActive = false
-                Log.d("TIMER", "timer coroutine: timer OFF")
             }
         }
 
@@ -109,25 +106,25 @@ fun CoreView(
             modifier = modifier
                 .padding(bottom = 16.dp)
                 .clickable {
-                    Log.d("CLICKABLE", "VALOR DOS CLICKS ASSIM QUE CLICKA: $clicks ")
                     clicks++
-                    Log.d("CLICKS", "Clicks count: $clicks")
 
                     if (imageDescription == R.string.lemon) {
 
                         if (clicks == 1) {
                             timerActive = true
-                            Log.d("TIMER", "timer onClick: timer ON")
                         }
 
-                        if (clicks >= randomClickGoal) {
+                        if (clicks == randomClickGoal) {
                             onImageClick()
                             clicks = 0
                             timerActive = false
-                            Log.d("TIMER", "timer onClick: timer OFF")
                         }
+                    } else if (imageDescription == R.string.empty_glass) {
+                        randomClickGoal = (2..4).random()
+                        onImageClick()
+                        clicks = 0
+
                     } else {
-                        Log.d("NO LEMON", "Fora da LEMON VIEW")
                         onImageClick()
                         clicks = 0
                     }
@@ -146,7 +143,7 @@ fun CoreView(
                 stringResource(textContent) + " (${clicks}/${randomClickGoal})"
             } else {
                 stringResource(textContent)
-            }
+            }, style = MaterialTheme.typography.bodyLarge
         )
     }
 }
