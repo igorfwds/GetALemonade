@@ -70,7 +70,7 @@ fun GetLemonadeApp(
                     text = "Lemonade", fontWeight = FontWeight.Bold
                 )
             }, colors = TopAppBarDefaults.largeTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
+                containerColor = colorResource(R.color.button_background)
             )
         )
     }) { innerPadding ->
