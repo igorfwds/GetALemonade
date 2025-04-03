@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="button_background">#D2E7DA</color>
+    <color name="button_stroke">#69CDD8</color>
 </resources>
